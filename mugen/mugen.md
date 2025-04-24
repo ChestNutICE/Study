@@ -839,11 +839,38 @@ Mugen 的 PCP 测试需要两台互通网络的测试机
 
 ### 实际测试
 
-因为我机器的性能比较有限，所以我测试了单独的测试用例
+测试结果：
 
-示例：pmdate 
+```
+hu Apr 24 16:32:31 2025 - INFO  - A total of 74 use cases were executed, with 36 successes 38 failures and 0 skips.
+```
 
-* (log 如下)
+成功用例：
+
+```
+[root@10 pcp]# cd succeed/
+[root@10 succeed]# ls
+oe_test_dbpmda               oe_test_pmconfig_pmie_check
+oe_test_dstat_01             oe_test_pmdate
+oe_test_dstat_02             oe_test_pmdumptext_001
+oe_test_pcp2json_03          oe_test_pmdumptext_002
+oe_test_pcp2json_04          oe_test_pmdumptext_003
+oe_test_pcp2json_05          oe_test_pmjson
+oe_test_pcp2xml_03           oe_test_pmlogger_daily_02
+oe_test_pcp2xml_04           oe_test_pmlogger_daily_report
+oe_test_pcp_atop_01          oe_test_pmrep_03
+oe_test_pcp_collectl             oe_test_pmrep_04
+oe_test_pcp_dmcache          oe_test_pmrep_05
+oe_test_pcp_free             oe_test_pmrep_06
+oe_test_pcp_pcp-import-collectl2pcp  oe_test_service_pcp-geolocate
+oe_test_pcp_pcp-import-iostat2pcp    oe_test_service_pcp-reboot-init
+oe_test_pcp_pcp-import-mrtg2pcp      oe_test_service_pmcd
+oe_test_pcp_pcp-import-sar2pcp       oe_test_service_pmie
+oe_test_pcp-pidstat_01           oe_test_service_pmlogger
+oe_test_pcp-pmda-elasticsearch       oe_test_service_pmproxy
+```
+
+成功用例之一：
 
 ```
 [root@10 pcp]# cd oe_test_pmdate/
@@ -869,20 +896,172 @@ Thu Apr 24 00:30:12 2025 - INFO  - End to restore the test environment.
 [root@10 oe_test_pmdate]# 
 ```
 
-* results
+失败用例：
 
 ```
-[root@10 mugen]# cd results/
-[root@10 results]# ls
-pcp
-[root@10 results]# cd pcp/
-[root@10 pcp]# ls
-succeed
-[root@10 pcp]# cd succeed/
-[root@10 succeed]# ls
-oe_test_pmdate
-[root@10 succeed]# 
+[root@10 failed]# ls
+oe_test_dstat_03
+oe_test_pcp
+oe_test_pcp2json_01
+oe_test_pcp2json_02
+oe_test_pcp2xml_01
+oe_test_pcp2xml_02
+oe_test_pcp_atop_02
+oe_test_pcp-iostat
+oe_test_pcp-mpstat_pcp-numastat
+oe_test_pcp_pcp-import-ganglia2pcp
+oe_test_pcp-pidstat_02_pcp-ipcs
+oe_test_pcp-summary_pcp-vmstat_pmcd_wait
+oe_test_pcp-uptime_pcp-verify
+oe_test_pmdumplog_01
+oe_test_pmdumplog_02
+oe_test_pmevent_01
+oe_test_pmevent_02
+oe_test_pmfind_pmgenmap_pmie2col_pminfo_01
+oe_test_pmhostname_pmlock_pmlogger_check
+oe_test_pminfo_02
+oe_test_pminfo_03
+oe_test_pmlogcheck_pmlogmv
+oe_test_pmlogconf_pmlogsize
+oe_test_pmlogger_daily_01
+oe_test_pmlogger_merge_pmlogger_rewrite
+oe_test_pmloglabel
+oe_test_pmlogreduce_pmpause_pmpost_pmsleep
+oe_test_pmlogsummary_01
+oe_test_pmlogsummary_02
+oe_test_pmprobe_01
+oe_test_pmprobe_02
+oe_test_pmpython_mkaf_pcp-python
+oe_test_pmrep_01
+oe_test_pmrep_02
+oe_test_pmstat
+oe_test_pmstore_install-sh
+oe_test_pmval_01
+oe_test_pmval_02
 ```
+
+部分错误信息分析：
+
+* oe_test_pcp.sh
+
+```
+[root@10 oe_test_pcp]# cat 2025-04-24-13\:16\:27.log 
+Python 3.11.11
+Thu Apr 24 13:16:32 2025 - INFO  - Start to prepare the test environment.
+Thu Apr 24 13:16:43 2025 - INFO  - pkgs:(pcp) is already installed
+Thu Apr 24 13:17:07 2025 - INFO  - End to prepare the test environment.
+Thu Apr 24 13:17:08 2025 - INFO  - Start to run test.
+pcp version 6.3.2
+Cannot find a pcp-3min command to execute
+Thu Apr 24 13:17:14 2025 - ERROR - oe_test_pcp.sh line 33
+Thu Apr 24 13:17:17 2025 - ERROR - oe_test_pcp.sh line 35
+Cannot find a pcp-@08 command to execute
+Thu Apr 24 13:17:22 2025 - ERROR - oe_test_pcp.sh line 37
+ hardware: 4 cpus, 17 disks, 1 node, 3659MB RAM
+Thu Apr 24 13:17:31 2025 - ERROR - oe_test_pcp.sh line 41
+Cannot find a pcp-/var/lib/pcp/pmns/root command to execute
+Thu Apr 24 13:17:36 2025 - ERROR - oe_test_pcp.sh line 43
+Cannot find a pcp-22 command to execute
+Thu Apr 24 13:17:41 2025 - ERROR - oe_test_pcp.sh line 45
+Cannot find a pcp-@08 command to execute
+Please install pcp system tools package
+ pmlogger: primary logger: /var/log/pcp/pmlogger/10.0.2.15/20250424.13.12
+Thu Apr 24 13:17:53 2025 - ERROR - oe_test_pcp.sh line 51
+Thu Apr 24 13:17:54 2025 - INFO  - End to run test.
+Thu Apr 24 13:17:55 2025 - ERROR - failed to execute the case.
+Thu Apr 24 13:17:55 2025 - INFO  - Start to restore the test environment.
+Thu Apr 24 13:17:56 2025 - WARN  - no thing to do.
+Thu Apr 24 13:17:57 2025 - INFO  - End to restore the test environment.
+```
+
+分析：
+
+我觉得这个应该是测试脚本编写的有问题
+
+其中 log 描述的错误里提到找不到命令
+
+有的 pcp-xxx 的命令好像需要使用以下的命令才能得到输出
+
+因此我认为这可能是导致错误的原因之一
+
+我所知的常见的 pcp 工具包中的命令有：
+
+* pmcd | 启动性能指标收集守护进程（Performance Metrics Collector Daemon）
+* pminfo | 查看系统中可用的性能指标
+* pmval | 获取某个性能指标的实时/历史值
+* pmstat | 类似 vmstat，显示 CPU、内存、磁盘等摘要性能信息
+* pmlogger | 记录性能数据到磁盘，用于离线分析
+* pmlogsummary | 生成日志摘要报告（配合 pmlogger 使用）
+* pmdumplog | 显示 .0 性能日志文件中的内容
+* pmie | 事件引擎，可以做报警、自动化等
+* pmproxy | 提供 REST API，供远程应用查询性能指标（适合 Web 前端）
+
+原脚本：
+
+```
+#!/usr/bin/bash
+
+# Copyright (c) 2021. Huawei Technologies Co.,Ltd.ALL rights reserved.
+# This program is licensed under Mulan PSL v2.
+# You can use it according to the terms and conditions of the Mulan PSL v2.
+#          http://license.coscl.org.cn/MulanPSL2
+# THIS PROGRAM IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the Mulan PSL v2 for more details.
+####################################
+#@Author        :   zhujinlong
+#@Contact       :   zhujinlong@163.com
+#@Date          :   2020-10-14
+#@License       :   Mulan PSL v2
+#@Desc          :   pcp testing(pcp)
+#####################################
+
+source "common/common_pcp.sh"
+
+function pre_test() {
+    LOG_INFO "Start to prepare the test environment."
+    deploy_env
+    archive_data=$(pcp -h "$host_name" | grep 'primary logger:' | awk -F: '{print $NF}')
+    LOG_INFO "End to prepare the test environment."
+}
+
+function run_test() {
+    LOG_INFO "Start to run test."
+    pcp --version | grep "$pcp_version"
+    CHECK_RESULT $?
+    pcp -a $archive_data -A 3min | grep 'Performance'
+    CHECK_RESULT $?
+    pcp -h $host_name | grep 'platform'
+    CHECK_RESULT $?
+    pcp -a $archive_data -O @08 -s 10 -t 2 | grep 'archive'
+    CHECK_RESULT $?
+    pcp -P | grep 'hardware'
+    CHECK_RESULT $?
+    pcp -a $archive_data -g | grep 'timezone'
+    CHECK_RESULT $?
+    pcp -a $archive_data -n /var/lib/pcp/pmns/root | grep 'services'
+    CHECK_RESULT $?
+    pcp -a $archive_data -p 22 | grep 'pmcd'
+    CHECK_RESULT $?
+    pcp -a $archive_data -S @08 -T @18 | grep "$archive_data"
+    CHECK_RESULT $?
+    pcp -Z Africa/Lagos | grep 'pmlogger'
+    CHECK_RESULT $?
+    pcp -a $archive_data -z | grep 'Performance Co-Pilot'
+    CHECK_RESULT $?
+    LOG_INFO "End to run test."
+}
+
+function post_test() {
+    LOG_INFO "Start to restore the test environment."
+    DNF_REMOVE
+    LOG_INFO "End to restore the test environment."
+}
+
+main "$@"
+```
+
 
 # 总结
 
@@ -893,3 +1072,7 @@ oe_test_pmdate
 在没有详细测试文档的情况下我也可以研究被测试的工具或软件本身
 
 以编写测试用例和进行测试工作
+
+关于 pcp 测试套，我起了两个 qemu，测试了一下是可以互相 ping 通的，并且 pmcd 服务监听的端口也转发到 node1 了，不知道为什么 pcp 远程连接的功能都不太能用，有可能是 pcp 工具在 riscv 平台上对于这一部分功能的支持还没有完善，也有可能是网络配置上还是出了问题
+
+这周末我还会去试试配置运行其他的测试套 增进一下对 mugen 的掌握程度
